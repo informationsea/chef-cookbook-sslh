@@ -1,76 +1,38 @@
-#!/bin/bash
 #
-#       /etc/rc.d/init.d/sslh
-# sslh          This shell script takes care of starting and stopping
-#               sslh - a daemon switching incoming connection between SSH and SSL/HTTPS servers
+# The default processing model uses select
+# A fork model is also available
 #
-# Author: Andre Krajnik akrajnik@gmail.com
-# 2010-03-20
+SSLH=<%= node["sslh"]["prefix"] %>/sbin/sslh-select
+
+<% if node["sslh"]["transparent"] %>
 #
+# If transparent mode is enabled, the following
+# is needed in order to run as sslh user
 #
-# chkconfig: 2345 13 87
+SSLH_USER=<%= node["sslh"]["user"] %>
+setcap cap_net_bind_service,cap_net_admin=+ep $SSLH
+<% end %>
+
 #
-# description: sslh - a daemon switching incoming connection between SSH and SSL/HTTPS servers
+# Configuration file for sslh
+# Set empty to disable configuration file support
+#
+#CONFIG=/etc/sslh.cfg
 
-# Source function library.
-. /etc/init.d/functions
+#
+# Extra option to pass on comand line
+# Those can supersede configuration file settings
+# 
+OPTIONS="<%= node["sslh"]["options"] %> --pidfile /var/run/sslh/sslh.pid <% if node["sslh"]["transparent"] %>--transparent<% end %>"
 
-# ./sslh -p  0.0.0.0:8443 -l 127.0.0.1:443 -s 127.0.0.1:22
+#
+# The sslh process is started by default with the C
+# locale, it can be changed here
+#
+#SSLH_LANG=C
 
-SSLH="/usr/local/sbin/sslh"
-PIDFILE="/var/run/sslh"
-
-OPTIONS="<%= node["sslh"]["options"] %>"
-
-if [ -f /etc/sysconfig/sslh ]; then
-        . /etc/sysconfig/sslh
-fi
-
-start() {
-        echo -n "Starting SSL-SSH-Switch: "
-        if [ -f $PIDFILE ]; then
-                PID=`cat $PIDFILE`
-                echo sslh already running: $PID
-                exit 2;
-        else
-                daemon  $SSLH $OPTIONS
-                RETVAL=$?
-                echo
-                [ $RETVAL -eq 0 ] && touch $PIDFILE
-                return $RETVAL
-        fi
-
-}
-
-stop() {
-        echo -n "Shutting down SSL-SSH-Switch: "
-        echo
-        killproc sslh
-        echo
-        rm -f $PIDFILE
-        return 0
-}
-
-case "$1" in
-    start)
-        start
-        ;;
-    stop)
-        stop
-        ;;
-    status)
-        status sslh
-        ;;
-    restart)
-        stop
-        start
-        ;;
-    *)
-        echo "Usage:  {start|stop|status|restart}"
-        exit 1
-        ;;
-esac
-exit $?
-
-
-
+#
+# If an alternate location is specified in configuration
+# file, it needs to be reported here
+#
+PIDFILE=/var/run/sslh/sslh.pid
