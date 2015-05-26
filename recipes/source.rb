@@ -24,49 +24,37 @@ end
 
 bash 'unarchive_source' do
   cwd ::File.dirname(src_filepath)
-  code <<-EOH
-    tar zxf #{::File.basename(src_filepath)} -C #{::File.dirname(src_filepath)}
-  EOH
+  code "tar zxf #{::File.basename(src_filepath)} -C #{::File.dirname(src_filepath)}"
   not_if { ::File.directory?(src_dirpath) }
 end
 
 bash 'compile_sslh' do
   cwd src_dirpath
-  code <<-EOH
-make  PREFIX=#{install_dirpath}
-EOH
+  code "make  PREFIX=#{install_dirpath}"
   creates "#{src_dirpath}/sslh-fork"
 end
 
 #bash 'install_ssl' do
 #  cwd src_dirpath
-#  code <<-EOH
-#make install PREFIX=#{install_dirpath}
-#EOH
+#  code "make install PREFIX=#{install_dirpath}"
 #  creates "${install_dirpath}/sbin/sslh"
 #end
 
 bash 'install_ssl-select' do
   cwd src_dirpath
-  code <<-EOH
-cp #{src_dirpath}/sslh-select #{install_dirpath}/sbin/
-EOH
+  code "cp #{src_dirpath}/sslh-select #{install_dirpath}/sbin/"
   creates '/usr/local/sbin/sslh-select'
 end
 
 bash 'install_ssl-init' do
   cwd src_dirpath
-  code <<-EOH
-cp #{src_dirpath}/scripts/etc.rc.d.init.d.sslh.centos /etc/rc.d/init.d/sslh
-EOH
+  code "cp #{src_dirpath}/scripts/etc.rc.d.init.d.sslh.centos /etc/rc.d/init.d/sslh"
   creates '/etc/rc.d/init.d/sslh'
 end
 
 bash 'install_ssl-default' do
   cwd src_dirpath
-  code <<-EOH
-cp #{src_dirpath}/scripts/etc.default.sslh  /etc/default/sslh
-EOH
+  code "cp #{src_dirpath}/scripts/etc.default.sslh  /etc/default/sslh"
   creates '/etc/default/sslh'
 end
 
@@ -74,7 +62,6 @@ template '/etc/sysconfig/sslh' do
   owner 'root'
   group 'root'
   mode 0755
-  action :create
   notifies :restart, 'service[sslh]'
 end
 
@@ -82,7 +69,6 @@ template '/etc/sslh.cfg' do
   owner 'root'
   group 'root'
   mode 0644
-  action :create
   notifies :restart, 'service[sslh]'
 end
 
@@ -91,7 +77,6 @@ template '/etc/rsyslog.d/sslh.conf' do
   owner 'root'
   group 'root'
   mode 0644
-  action :create
   notifies :restart, 'service[rsyslog]'
 end
 
@@ -100,7 +85,6 @@ template '/etc/logrotate.d/sslh' do
   owner 'root'
   group 'root'
   mode 0644
-  action :create
 end
 
 directory '/var/run/sslh' do
