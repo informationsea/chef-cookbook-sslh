@@ -1,4 +1,4 @@
 service 'sslh' do
-  supports :status => true, :restart => true
-  action   [:stop, :disable]
+  supports status: true, restart: true
+  action [:stop, :disable]
 end
