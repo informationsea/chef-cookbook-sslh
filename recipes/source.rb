@@ -1,9 +1,9 @@
 sslh_url = "http://www.rutschle.net/tech/sslh-v#{node['sslh']['source']['version']}.tar.gz"
 src_filepath  = "#{Chef::Config['file_cache_path'] || '/tmp'}/sslh-v#{node['sslh']['source']['version']}.tar.gz"
 src_dirpath = "#{Chef::Config['file_cache_path'] || '/tmp'}/sslh-v#{node['sslh']['source']['version']}"
-install_dirpath = "#{node['sslh']['prefix']}"
+install_dirpath = node['sslh']['prefix']
 
-%w{libconfig-devel}.each do |pkg|
+%w(libconfig-devel).each do |pkg|
   package pkg do
     action :install
   end
@@ -17,10 +17,9 @@ user node['sslh']['user'] do
 end
 
 remote_file sslh_url do
-  source   sslh_url
   checksum node['sslh']['source']['checksum']
-  path     src_filepath
-  backup   false
+  path src_filepath
+  backup false
 end
 
 bash 'unarchive_source' do
@@ -28,11 +27,11 @@ bash 'unarchive_source' do
   code <<-EOH
     tar zxf #{::File.basename(src_filepath)} -C #{::File.dirname(src_filepath)}
   EOH
-  not_if { ::File.directory?("#{src_dirpath}") }
+  not_if { ::File.directory?(src_dirpath) }
 end
 
 bash 'compile_sslh' do
-  cwd "#{src_dirpath}"
+  cwd src_dirpath
   code <<-EOH
 make  PREFIX=#{install_dirpath}
 EOH
