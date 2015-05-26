@@ -2,14 +2,14 @@
 # The default processing model uses select
 # A fork model is also available
 #
-SSLH=<%= node["sslh"]["prefix"] %>/sbin/sslh-select
+SSLH=<%= node['sslh']['prefix'] %>/sbin/sslh-select
 
-<% if node["sslh"]["transparent"] %>
+<% if node['sslh']['transparent'] %>
 #
 # If transparent mode is enabled, the following
 # is needed in order to run as sslh user
 #
-SSLH_USER=<%= node["sslh"]["user"] %>
+SSLH_USER=<%= node['sslh']['user'] %>
 setcap cap_net_bind_service,cap_net_admin=+ep $SSLH
 <% end %>
 
@@ -23,7 +23,7 @@ setcap cap_net_bind_service,cap_net_admin=+ep $SSLH
 # Extra option to pass on comand line
 # Those can supersede configuration file settings
 # 
-OPTIONS="<%= node["sslh"]["options"] %> --pidfile /var/run/sslh/sslh.pid <% if node["sslh"]["transparent"] %>--transparent<% end %>"
+OPTIONS="<%= node['sslh']['options'] %> --pidfile /var/run/sslh/sslh.pid <% if node['sslh']['transparent'] %>--transparent<% end %>"
 
 #
 # The sslh process is started by default with the C

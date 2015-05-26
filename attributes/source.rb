@@ -1,5 +1,5 @@
-default["sslh"]["prefix"] = "/usr/local"
-default["sslh"]["source"]["version"] = "1.16"
-default["sslh"]["source"]["checksum"] = "e97b3be9f010bc763a7f11c94e54d8ead33cab3f0c93a52bb9a7f708212e5902"
-default[:sslh][:options] = "--user nobody --pidfile $PIDFILE -p  0.0.0.0:8443 --ssl 127.0.0.1:443 --ssh 127.0.0.1:22"
-default[:sslh][:user] = "sslh"
+default['sslh']['prefix'] = '/usr/local'
+default['sslh']['source']['version'] = '1.16'
+default['sslh']['source']['checksum'] = 'e97b3be9f010bc763a7f11c94e54d8ead33cab3f0c93a52bb9a7f708212e5902'
+default['sslh']['options'] = '--user nobody --pidfile $PIDFILE -p  0.0.0.0:8443 --ssl 127.0.0.1:443 --ssh 127.0.0.1:22'
+default['sslh']['user'] = 'sslh'
