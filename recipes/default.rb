@@ -7,4 +7,4 @@
 # All rights reserved - Do Not Redistribute
 #
 
-include_recipe "sslh::source"
+include_recipe 'sslh::source'
